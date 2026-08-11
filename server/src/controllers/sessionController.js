@@ -1,4 +1,5 @@
 const Session = require('../models/Session');
+const User = require('../models/User');
 
 // @desc   Request a new session with a match
 // @route  POST /api/sessions
@@ -71,6 +72,34 @@ const updateSessionStatus = async (req, res) => {
 
     if (!isParticipant) {
       return res.status(403).json({ message: 'Not authorized to update this session' });
+    }
+
+    // Prevent illogical transitions, e.g. completing a session that was never confirmed
+    if (status === 'completed' && session.status !== 'confirmed') {
+      return res.status(400).json({ message: 'Only confirmed sessions can be marked completed' });
+    }
+
+    // Prevent double-processing credits if someone spams the request
+    if (status === 'completed' && session.status === 'completed') {
+      return res.status(400).json({ message: 'Session already marked completed' });
+    }
+
+    // Handle credit transfer only when a session newly becomes completed
+    if (status === 'completed') {
+      const learner = await User.findById(session.learner);
+      const teacher = await User.findById(session.teacher);
+
+      const CREDIT_COST = 5; // flat cost per session — could later scale with durationMinutes
+
+      if (learner.credits < CREDIT_COST) {
+        return res.status(400).json({ message: 'Learner does not have enough credits' });
+      }
+
+      learner.credits -= CREDIT_COST;
+      teacher.credits += CREDIT_COST;
+
+      await learner.save();
+      await teacher.save();
     }
 
     session.status = status;
