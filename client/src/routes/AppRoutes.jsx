@@ -5,6 +5,7 @@ import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
+import Matches from '../pages/Matches';
 
 const Home = () => <h1>Home Page (placeholder)</h1>;
 
@@ -32,6 +33,14 @@ const AppRoutes = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/matches"
+            element={
+              <ProtectedRoute>
+                <Matches />
+              </ProtectedRoute>
+          }
+         />
         </Route>
       </Routes>
     </BrowserRouter>
