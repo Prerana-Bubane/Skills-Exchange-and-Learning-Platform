@@ -41,6 +41,18 @@ const AppRoutes = () => {
               </ProtectedRoute>
           }
          />
+          import Sessions from '../pages/Sessions';
+
+          <Route
+            path="/sessions"
+            element={
+               <ProtectedRoute>
+                  <Sessions />
+               </ProtectedRoute>
+          }
+         />
+
+
         </Route>
       </Routes>
     </BrowserRouter>
