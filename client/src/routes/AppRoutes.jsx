@@ -7,6 +7,7 @@ import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
 import Matches from '../pages/Matches';
 import Sessions from '../pages/Sessions';
+import PublicProfile from '../pages/PublicProfile';
 
 const Home = () => <h1>Home Page (placeholder)</h1>;
 
@@ -49,6 +50,15 @@ const AppRoutes = () => {
                <ProtectedRoute>
                   <Sessions />
                </ProtectedRoute>
+          }
+         />
+
+         <Route
+            path="/users/:userId"
+            element={
+              <ProtectedRoute>
+                  <PublicProfile />
+              </ProtectedRoute>
           }
          />
 
