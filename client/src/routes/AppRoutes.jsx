@@ -6,6 +6,7 @@ import Signup from '../pages/Signup';
 import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
 import Matches from '../pages/Matches';
+import Sessions from '../pages/Sessions';
 
 const Home = () => <h1>Home Page (placeholder)</h1>;
 
@@ -41,7 +42,6 @@ const AppRoutes = () => {
               </ProtectedRoute>
           }
          />
-          import Sessions from '../pages/Sessions';
 
           <Route
             path="/sessions"
