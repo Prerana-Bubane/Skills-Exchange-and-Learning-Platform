@@ -8,8 +8,9 @@ import Profile from '../pages/Profile';
 import Matches from '../pages/Matches';
 import Sessions from '../pages/Sessions';
 import PublicProfile from '../pages/PublicProfile';
+import Home from '../pages/Home';
 
-const Home = () => <h1>Home Page (placeholder)</h1>;
+// const Home = () => <h1>Home Page (placeholder)</h1>;
 
 const AppRoutes = () => {
   return (
