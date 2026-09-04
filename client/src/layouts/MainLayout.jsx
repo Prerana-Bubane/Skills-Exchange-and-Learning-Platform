@@ -3,9 +3,9 @@ import Navbar from '../components/common/Navbar';
 
 const MainLayout = () => {
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <main style={{ padding: '1rem' }}>
+      <main className="max-w-6xl mx-auto px-6 py-8">
         <Outlet />
       </main>
     </div>
