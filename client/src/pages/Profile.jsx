@@ -11,7 +11,6 @@ const Profile = () => {
   const [message, setMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Pre-fill the form with the user's existing skills once loaded
   useEffect(() => {
     if (user) {
       setSkillsToTeach(user.skillsToTeach?.join(', ') || '');
@@ -25,24 +24,11 @@ const Profile = () => {
     setMessage('');
 
     try {
-      // Convert comma-separated text back into a clean array,
-      // trimming whitespace and dropping empty entries
-      const teachArray = skillsToTeach
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
+      const teachArray = skillsToTeach.split(',').map((s) => s.trim()).filter(Boolean);
+      const learnArray = skillsToLearn.split(',').map((s) => s.trim()).filter(Boolean);
 
-      const learnArray = skillsToLearn
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-
-      await userService.updateProfile({
-        skillsToTeach: teachArray,
-        skillsToLearn: learnArray,
-      });
-
-      await loadUser(); // refresh the store with the latest saved data
+      await userService.updateProfile({ skillsToTeach: teachArray, skillsToLearn: learnArray });
+      await loadUser();
       setMessage('Profile updated successfully!');
     } catch (error) {
       setMessage('Failed to update profile. Please try again.');
@@ -52,39 +38,54 @@ const Profile = () => {
   };
 
   return (
-    <div>
-      <h1>Edit Profile</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Skills you can teach (comma-separated)</label>
-          <br />
-          <input
-            type="text"
-            value={skillsToTeach}
-            onChange={(e) => setSkillsToTeach(e.target.value)}
-            placeholder="e.g. React, Node.js, Guitar"
-            style={{ width: '100%' }}
-          />
-        </div>
+    <div className="max-w-xl mx-auto">
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Profile</h1>
 
-        <div style={{ marginTop: '1rem' }}>
-          <label>Skills you want to learn (comma-separated)</label>
-          <br />
-          <input
-            type="text"
-            value={skillsToLearn}
-            onChange={(e) => setSkillsToLearn(e.target.value)}
-            placeholder="e.g. Spanish, Cooking"
-            style={{ width: '100%' }}
-          />
-        </div>
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Skills you can teach
+            </label>
+            <input
+              type="text"
+              value={skillsToTeach}
+              onChange={(e) => setSkillsToTeach(e.target.value)}
+              placeholder="e.g. React, Node.js, Guitar"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+            <p className="text-xs text-gray-400 mt-1">Separate skills with commas</p>
+          </div>
 
-        {message && <p>{message}</p>}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Skills you want to learn
+            </label>
+            <input
+              type="text"
+              value={skillsToLearn}
+              onChange={(e) => setSkillsToLearn(e.target.value)}
+              placeholder="e.g. Spanish, Cooking"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+            <p className="text-xs text-gray-400 mt-1">Separate skills with commas</p>
+          </div>
 
-        <button type="submit" disabled={isSaving} style={{ marginTop: '1rem' }}>
-          {isSaving ? 'Saving...' : 'Save Profile'}
-        </button>
-      </form>
+          {message && (
+            <p className={`text-sm ${message.includes('success') ? 'text-green-600' : 'text-red-500'}`}>
+              {message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white font-medium py-2 rounded-lg transition"
+          >
+            {isSaving ? 'Saving...' : 'Save Profile'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
