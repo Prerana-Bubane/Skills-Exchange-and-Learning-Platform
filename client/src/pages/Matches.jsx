@@ -34,27 +34,37 @@ const Matches = () => {
     }
   };
 
-  if (isLoading) return <p>Loading matches...</p>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+  if (isLoading) return <p className="text-gray-500">Loading matches...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <div>
-      <h1>Your Matches</h1>
+    <div className="max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Your Matches</h1>
 
-      {bookingMessage && <p style={{ color: 'green' }}>{bookingMessage}</p>}
-
-      <h2>Direct Matches ({matches.directMatches.length})</h2>
-      {matches.directMatches.length === 0 ? (
-        <p>No direct matches yet. Try adding more skills to your profile.</p>
-      ) : (
-        matches.directMatches.map((match) => (
-          <MatchCard key={match.user._id} match={match} onBookSession={handleBookSession} />
-        ))
+      {bookingMessage && (
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-lg mb-6">
+          {bookingMessage}
+        </div>
       )}
 
-      <h2>Trade Chains ({matches.chainMatches.length})</h2>
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+        Direct Matches ({matches.directMatches.length})
+      </h2>
+      {matches.directMatches.length === 0 ? (
+        <p className="text-gray-400 text-sm mb-8">No direct matches yet. Try adding more skills to your profile.</p>
+      ) : (
+        <div className="mb-8">
+          {matches.directMatches.map((match) => (
+            <MatchCard key={match.user._id} match={match} onBookSession={handleBookSession} />
+          ))}
+        </div>
+      )}
+
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+        Trade Chains ({matches.chainMatches.length})
+      </h2>
       {matches.chainMatches.length === 0 ? (
-        <p>No trade chains found yet.</p>
+        <p className="text-gray-400 text-sm">No trade chains found yet.</p>
       ) : (
         matches.chainMatches.map((match, index) => (
           <MatchCard key={index} match={match} onBookSession={handleBookSession} />
