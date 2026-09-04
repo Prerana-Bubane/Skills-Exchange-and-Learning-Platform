@@ -9,46 +9,76 @@ const MatchCard = ({ match, onBookSession }) => {
 
   const handleBook = () => {
     if (!selectedSkill || !scheduledAt) return;
-
-    // For direct matches, the "teacher" is the other user teaching us a skill
     onBookSession({
       teacherId: match.user._id,
       skill: selectedSkill,
       scheduledAt: new Date(scheduledAt).toISOString(),
     });
-
     setShowBookingForm(false);
   };
 
   if (isDirect) {
     return (
-      <div style={{ border: '1px solid #ddd', padding: '1rem', marginBottom: '1rem', borderRadius: '8px' }}>
-        <h3>{match.user.name}</h3>
-        <p><strong>They teach you:</strong> {match.theyTeach.join(', ')}</p>
-        <p><strong>You teach them:</strong> {match.youTeach.join(', ')}</p>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-gray-900">{match.user.name}</h3>
+          <span className="bg-emerald-50 text-emerald-700 text-xs font-medium px-2.5 py-1 rounded-full">
+            Direct Match
+          </span>
+        </div>
+
+        <div className="space-y-1.5 mb-4">
+          <p className="text-sm text-gray-600">
+            <span className="text-gray-400">They teach you:</span>{' '}
+            <span className="font-medium">{match.theyTeach.join(', ')}</span>
+          </p>
+          <p className="text-sm text-gray-600">
+            <span className="text-gray-400">You teach them:</span>{' '}
+            <span className="font-medium">{match.youTeach.join(', ')}</span>
+          </p>
+        </div>
 
         {!showBookingForm ? (
-          <button onClick={() => setShowBookingForm(true)}>Book a Session</button>
+          <button
+            onClick={() => setShowBookingForm(true)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+          >
+            Book a Session
+          </button>
         ) : (
-          <div style={{ marginTop: '0.5rem' }}>
-            <select value={selectedSkill} onChange={(e) => setSelectedSkill(e.target.value)}>
+          <div className="space-y-3 pt-3 border-t border-gray-100">
+            <select
+              value={selectedSkill}
+              onChange={(e) => setSelectedSkill(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
               <option value="">Select skill to learn</option>
               {match.theyTeach.map((skill) => (
                 <option key={skill} value={skill}>{skill}</option>
               ))}
             </select>
-            <br />
+
             <input
               type="datetime-local"
               value={scheduledAt}
               onChange={(e) => setScheduledAt(e.target.value)}
-              style={{ marginTop: '0.5rem' }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-            <br />
-            <button onClick={handleBook} style={{ marginTop: '0.5rem' }}>Confirm Booking</button>
-            <button onClick={() => setShowBookingForm(false)} style={{ marginTop: '0.5rem', marginLeft: '0.5rem' }}>
-              Cancel
-            </button>
+
+            <div className="flex gap-2">
+              <button
+                onClick={handleBook}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+              >
+                Confirm Booking
+              </button>
+              <button
+                onClick={() => setShowBookingForm(false)}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -57,15 +87,25 @@ const MatchCard = ({ match, onBookSession }) => {
 
   // Chain match rendering
   return (
-    <div style={{ border: '1px solid #f0ad4e', padding: '1rem', marginBottom: '1rem', borderRadius: '8px' }}>
-      <h3>3-Way Trade Chain</h3>
-      {match.path.map((step, index) => (
-        <p key={index}>
-          <strong>{step.user.name}</strong> teaches: {step.teachesNext.join(', ')}
-        </p>
-      ))}
-      <p style={{ fontSize: '0.85rem', color: '#888' }}>
-        Note: chain trades require coordinating with multiple people — booking support for this coming soon.
+    <div className="bg-white rounded-xl shadow-sm border border-amber-200 p-5 mb-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-semibold text-gray-900">3-Way Trade Chain</h3>
+        <span className="bg-amber-50 text-amber-700 text-xs font-medium px-2.5 py-1 rounded-full">
+          Chain Match
+        </span>
+      </div>
+
+      <div className="space-y-1.5">
+        {match.path.map((step, index) => (
+          <p key={index} className="text-sm text-gray-600">
+            <span className="font-medium text-gray-900">{step.user.name}</span>{' '}
+            teaches: <span className="font-medium">{step.teachesNext.join(', ')}</span>
+          </p>
+        ))}
+      </div>
+
+      <p className="text-xs text-gray-400 mt-3 pt-3 border-t border-gray-100">
+        Chain trades require coordinating with multiple people — booking support coming soon.
       </p>
     </div>
   );
