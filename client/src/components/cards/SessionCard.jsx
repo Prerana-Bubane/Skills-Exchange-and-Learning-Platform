@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ReviewForm from '../forms/reviewForm';
+import ReviewForm from '../forms/ReviewForm';
 
 const SessionCard = ({ session, currentUserId, onUpdateStatus }) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -9,32 +9,42 @@ const SessionCard = ({ session, currentUserId, onUpdateStatus }) => {
   const otherPerson = isTeacher ? session.learner : session.teacher;
   const myRole = isTeacher ? 'Teaching' : 'Learning';
 
-  const statusColors = {
-    pending: '#f0ad4e',
-    confirmed: '#5bc0de',
-    completed: '#5cb85c',
-    cancelled: '#d9534f',
+  const statusStyles = {
+    pending: 'bg-amber-50 text-amber-700',
+    confirmed: 'bg-sky-50 text-sky-700',
+    completed: 'bg-emerald-50 text-emerald-700',
+    cancelled: 'bg-red-50 text-red-700',
   };
 
   return (
-    <div style={{ border: '1px solid #ddd', padding: '1rem', marginBottom: '1rem', borderRadius: '8px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <h3>{session.skill}</h3>
-        <span style={{ color: statusColors[session.status], fontWeight: 'bold' }}>
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-semibold text-gray-900">{session.skill}</h3>
+        <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusStyles[session.status]}`}>
           {session.status.toUpperCase()}
         </span>
       </div>
 
-      <p><strong>{myRole} with:</strong> {otherPerson.name}</p>
-      <p><strong>Scheduled:</strong> {new Date(session.scheduledAt).toLocaleString()}</p>
-      <p><strong>Duration:</strong> {session.durationMinutes} minutes</p>
-      {session.notes && <p><strong>Notes:</strong> {session.notes}</p>}
+      <div className="space-y-1 text-sm text-gray-600 mb-4">
+        <p><span className="text-gray-400">{myRole} with:</span> <span className="font-medium">{otherPerson.name}</span></p>
+        <p><span className="text-gray-400">Scheduled:</span> {new Date(session.scheduledAt).toLocaleString()}</p>
+        <p><span className="text-gray-400">Duration:</span> {session.durationMinutes} minutes</p>
+        {session.notes && <p><span className="text-gray-400">Notes:</span> {session.notes}</p>}
+      </div>
 
-      <div style={{ marginTop: '0.5rem' }}>
+      <div className="flex flex-wrap gap-2">
         {session.status === 'pending' && isTeacher && (
           <>
-            <button onClick={() => onUpdateStatus(session._id, 'confirmed')}>Confirm</button>
-            <button onClick={() => onUpdateStatus(session._id, 'cancelled')} style={{ marginLeft: '0.5rem' }}>
+            <button
+              onClick={() => onUpdateStatus(session._id, 'confirmed')}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+            >
+              Confirm
+            </button>
+            <button
+              onClick={() => onUpdateStatus(session._id, 'cancelled')}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition"
+            >
               Decline
             </button>
           </>
@@ -42,17 +52,30 @@ const SessionCard = ({ session, currentUserId, onUpdateStatus }) => {
 
         {session.status === 'confirmed' && (
           <>
-            <button onClick={() => onUpdateStatus(session._id, 'completed')}>Mark Completed</button>
-            <button onClick={() => onUpdateStatus(session._id, 'cancelled')} style={{ marginLeft: '0.5rem' }}>
+            <button
+              onClick={() => onUpdateStatus(session._id, 'completed')}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+            >
+              Mark Completed
+            </button>
+            <button
+              onClick={() => onUpdateStatus(session._id, 'cancelled')}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition"
+            >
               Cancel
             </button>
           </>
         )}
 
         {session.status === 'completed' && !reviewSubmitted && (
-          <>
+          <div className="w-full">
             {!showReviewForm ? (
-              <button onClick={() => setShowReviewForm(true)}>Leave a Review</button>
+              <button
+                onClick={() => setShowReviewForm(true)}
+                className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-medium px-4 py-2 rounded-lg transition"
+              >
+                Leave a Review
+              </button>
             ) : (
               <ReviewForm
                 sessionId={session._id}
@@ -62,10 +85,10 @@ const SessionCard = ({ session, currentUserId, onUpdateStatus }) => {
                 }}
               />
             )}
-          </>
+          </div>
         )}
 
-        {reviewSubmitted && <p style={{ color: 'green' }}>Thanks for your review!</p>}
+        {reviewSubmitted && <p className="text-emerald-600 text-sm">Thanks for your review!</p>}
       </div>
     </div>
   );
