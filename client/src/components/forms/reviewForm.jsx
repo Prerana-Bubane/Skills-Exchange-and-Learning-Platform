@@ -11,10 +11,9 @@ const ReviewForm = ({ sessionId, onReviewSubmitted }) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
-
     try {
       await reviewService.createReview({ sessionId, rating, comment });
-      onReviewSubmitted(); // tell the parent to refresh/hide this form
+      onReviewSubmitted();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to submit review.');
     } finally {
@@ -23,27 +22,35 @@ const ReviewForm = ({ sessionId, onReviewSubmitted }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: '0.5rem', padding: '0.5rem', background: '#f9f9f9' }}>
-      <label>Rating: </label>
-      <select value={rating} onChange={(e) => setRating(Number(e.target.value))}>
-        {[5, 4, 3, 2, 1].map((n) => (
-          <option key={n} value={n}>{n} star{n > 1 ? 's' : ''}</option>
-        ))}
-      </select>
-
-      <br />
+    <form onSubmit={handleSubmit} className="bg-gray-50 rounded-lg p-4 mt-2 space-y-3">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+        <select
+          value={rating}
+          onChange={(e) => setRating(Number(e.target.value))}
+          className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          {[5, 4, 3, 2, 1].map((n) => (
+            <option key={n} value={n}>{n} star{n > 1 ? 's' : ''}</option>
+          ))}
+        </select>
+      </div>
 
       <textarea
         placeholder="Leave a comment (optional)"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         rows={2}
-        style={{ width: '100%', marginTop: '0.5rem' }}
+        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
 
-      <button type="submit" disabled={isSubmitting} style={{ marginTop: '0.5rem' }}>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+      >
         {isSubmitting ? 'Submitting...' : 'Submit Review'}
       </button>
     </form>
