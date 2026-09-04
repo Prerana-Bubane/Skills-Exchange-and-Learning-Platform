@@ -31,42 +31,51 @@ const Sessions = () => {
     try {
       await sessionService.updateSessionStatus(sessionId, status);
       setActionMessage(`Session marked as ${status}.`);
-      fetchSessions(); // refresh the list to show the new status
+      fetchSessions();
     } catch (err) {
       setActionMessage(err.response?.data?.message || 'Failed to update session.');
     }
   };
 
-  if (isLoading) return <p>Loading sessions...</p>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+  if (isLoading) return <p className="text-gray-500">Loading sessions...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
-  // Split sessions into upcoming (not completed/cancelled) and past, for clearer organization
   const upcoming = sessions.filter((s) => ['pending', 'confirmed'].includes(s.status));
   const past = sessions.filter((s) => ['completed', 'cancelled'].includes(s.status));
 
   return (
-    <div>
-      <h1>Your Sessions</h1>
+    <div className="max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Your Sessions</h1>
 
-      {actionMessage && <p style={{ color: 'green' }}>{actionMessage}</p>}
-
-      <h2>Upcoming ({upcoming.length})</h2>
-      {upcoming.length === 0 ? (
-        <p>No upcoming sessions. Go book one from your Matches page!</p>
-      ) : (
-        upcoming.map((session) => (
-          <SessionCard
-            key={session._id}
-            session={session}
-            currentUserId={user._id}
-            onUpdateStatus={handleUpdateStatus}
-          />
-        ))
+      {actionMessage && (
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-lg mb-6">
+          {actionMessage}
+        </div>
       )}
 
-      <h2>Past ({past.length})</h2>
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+        Upcoming ({upcoming.length})
+      </h2>
+      {upcoming.length === 0 ? (
+        <p className="text-gray-400 text-sm mb-8">No upcoming sessions. Go book one from your Matches page!</p>
+      ) : (
+        <div className="mb-8">
+          {upcoming.map((session) => (
+            <SessionCard
+              key={session._id}
+              session={session}
+              currentUserId={user._id}
+              onUpdateStatus={handleUpdateStatus}
+            />
+          ))}
+        </div>
+      )}
+
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+        Past ({past.length})
+      </h2>
       {past.length === 0 ? (
-        <p>No past sessions yet.</p>
+        <p className="text-gray-400 text-sm">No past sessions yet.</p>
       ) : (
         past.map((session) => (
           <SessionCard
